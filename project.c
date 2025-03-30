@@ -3,15 +3,67 @@
 
 /* ALU */
 /* 10 Points */
+/*isabella*/
 void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 {
+    //uing a switch case for simplicity
+    switch (ALUControl){
+        case 0: //000 Z=A+B
+            *ALUresult = A+B;
+            break;
+        case 1: //001 Z=A-B
+            *ALUresult = A-B;
+            break;
+        case 2: //010 A<B,Z=1 else Z=0 (signed comparison)
+             *ALUresult = ((int)A < (int)B) ? 1: 0;
+             break;
+        case 3: //011 same as case 2, but unsigned comparison
+             *ALUresult = (A < B) ? 1: 0;
+             break;
+        case 4: //100 Z= A & B
+            *ALUresult = A & B;
+            break;
+        case 5: //101 Z= A || B
+            *ALUresult= A | B;//bitwise or operator
+            break;
+        case 6: //110 Z= shift B left by 16
+            *ALUresult = B << 16;
+            break;
+        case 7: //111 Z=NOT A
+            *ALUresult= ~A;
+            break;
+        default: //base case just in case
+            *ALUresult =0;
+            break;
+    }
+
+    //if the result is 0, than *Zero = 1, else *Zero = 0
+    if (*ALUresult == 0){
+        *Zero = 1;//assery
+    }else{
+        *Zero = 0;
+    }
+        
 
 }
 
+
+
+
 /* instruction fetch */
 /* 10 Points */
+/*isabella*/
 int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 {
+    //first, need to check if pc is within correct bounds
+    if(PC % 4 != 0){
+        return 1; //halt
+    }
+
+    //getting the instruction from the memory
+    *instruction = Mem[PC/4];
+
+    return 0;//success
 
 }
 
