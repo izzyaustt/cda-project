@@ -339,15 +339,51 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
 
 /* Write Register */
 /* 10 Points */
+/* Kevin Rodriguez */
 void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,char RegWrite,char RegDst,char MemtoReg,unsigned *Reg)
 {
-
+    // Do nothing if register write is disabled.
+    if (RegWrite != 1)
+        return;
+    
+    // If RegDst is 1, the destination is r3
+    // otherwise (RegDst == 0) the destination is r2
+    unsigned dest_reg = (RegDst == 1) ? r3 : r2;
+    
+    // In MIPS, register $zero (register 0) must always remain 0.
+    if (dest_reg == 0)
+        return;
+    
+    // If MemtoReg is 1, use memdata
+    // otherwise, use ALUresult.
+    unsigned write_data = (MemtoReg == 1) ? memdata : ALUresult;
+    
+    Reg[dest_reg] = write_data;
 }
 
 /* PC update */
 /* 10 Points */
+/* Kevin Rodriguez */
 void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char Zero,unsigned *PC)
 {
-
+    // Default PC update
+    unsigned pc_next = *PC + 4;
+    
+    // Jump takes precedence over branch.
+    if (Jump == 1)
+    {
+        // Compute the jump target address using the upper 4 bits of (PC+4)
+        // and the lower 28 bits from jsec (shifted left by 2 for word alignment).
+        pc_next = (pc_next & 0xF0000000) | (jsec << 2);
+    }
+    // Otherwise, if a branch is signaled and the ALU result was zero, update PC with branch offset.
+    else if (Branch == 1 && Zero == 1)
+    {
+        // The branch offset is sign-extended and then shifted left 2 bits to get the byte offset.
+        pc_next = pc_next + (extended_value << 2);
+    }
+    
+    // Update PC with the computed address.
+    *PC = pc_next;
 }
 
