@@ -308,18 +308,31 @@ int instruction_decode(unsigned op,struct_controls *controls)
 }
 
 /* Read Register */
+/*Jason Mahant*/
 /* 5 Points */
 void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigned *data2)
 {
-//test 777
+*data1 = Reg[r1]
+*data2 = Reg[r2] 
 }
 
 
 /* Sign Extend */
+/*Jason Mahant*/
 /* 10 Points */
 void sign_extend(unsigned offset,unsigned *extended_value)
 {
-//test1
+unsigned sign_bit = (offset >> 15) & 1;
+    
+    // initialize the result with the lower 16 bits
+    *extended_value = offset & 0xFFFF;
+    
+    // if sign bit is 1 then set all upper 16 bits to 1
+    if (sign_bit) {
+        *extended_value |= 0xFFFF0000;
+    }
+
+    // upper 16 bits remain 0 if sign bit is 0
 }
 
 /* ALU operations */
